@@ -77,6 +77,8 @@ func (this *Generator) nextTime(lastTimeStamp int64) int64 {
 
 func (this *Generator) next() int64 {
 	this.Lock()
+	defer this.Unlock()
+
 	timeStamp := this.now()
 	if this.lastTimeStamp > timeStamp {
 		return 0
@@ -90,7 +92,6 @@ func (this *Generator) next() int64 {
 		this.sequence = 0
 	}
 	this.lastTimeStamp = timeStamp
-	this.Unlock()
 
 	return ((timeStamp - this.currentTimeStamp) << this.timeStampLeftShift) | (this.dataCenterId << this.dataCenterIdShift) | (this.workerId << this.workerIdShift) | this.sequence
 }
